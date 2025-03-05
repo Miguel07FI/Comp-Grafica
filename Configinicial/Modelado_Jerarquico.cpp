@@ -1,7 +1,7 @@
 /*
 Hernandez Ramirez Miguel Angel
 Modelado Jerarquico
-26 de febrero del 2025
+05 de marzo del 2025
 319044618
 */
 
@@ -32,7 +32,11 @@ float	hombro = 0.0f,
 codo = 0.0f,
 muneca = 0.0f,
 dedo1 = 0.0f,
-dedo2 = 0.0f;
+dedo2 = 0.0f,
+dedo3 = 0.0f,
+dedo4 = 0.0f,
+dedo5 = 0.0f,
+f1 = 0.0f;
 
 
 int main() {
@@ -210,54 +214,135 @@ int main() {
 
 		glBindVertexArray(VAO);
 		
-		//Model Bicep
-		model = glm::rotate(model, glm::radians(hombro), glm::vec3(0.0f, 0.0, 1.0f)); //hombro
-		modelTemp = model = glm::translate(model, glm::vec3(1.5f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(3.0f, 1.0f, 1.0f));
+		// Modelo Bicep
+		model = glm::rotate(model, glm::radians(hombro), glm::vec3(0.0f, 0.0f, 1.0f)); // hombro
+		modelTemp = model = glm::translate(model, glm::vec3(1.5f, 0.0f, 0.0f)); // Trasladamos el bicep
+		model = glm::scale(model, glm::vec3(3.0f, 1.0f, 1.0f)); // Escala del bicep
 		color = glm::vec3(0.0f, 1.0f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);//A
+		glDrawArrays(GL_TRIANGLES, 0, 36); // Dibuja el bicep
 
-		//Model Antebrazo
-		model = glm::translate(modelTemp, glm::vec3(1.5f, 0.0f, 0.0f));  // nos movemos al extremo de nuestro modelo 1
-		model = glm::rotate(model, glm::radians(codo), glm::vec3(0.0f, 1.0f, 0.0f)); //colocamos nuestra matriz de codo
-		modelTemp = model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));  // Generamos la jerarquia
-		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 1.0f)); // Dibujamos nuestro modelo, de escala 2 para que quede en la posicion ideal conenctado a nuestro modelo 1
+		// Modelo Antebrazo
+		model = glm::translate(modelTemp, glm::vec3(1.5f, 0.0f, 0.0f));  // Trasladamos al extremo del bicep
+		model = glm::rotate(model, glm::radians(codo), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotamos el codo
+		modelTemp = model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));  // Generamos la jerarquía
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 1.0f)); // Escala del antebrazo
 		color = glm::vec3(1.0f, 0.0f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);//B
+		glDrawArrays(GL_TRIANGLES, 0, 36); // Dibuja el antebrazo
 
-		//Modelo Palma
-		model = glm::translate(modelTemp, glm::vec3(1.0f, 0.0f, 0.0f));  // regresamos al valor anterior para no tener que empezar desde 0
-		model = glm::rotate(model, glm::radians(muneca), glm::vec3(1.0f, 0.0f, 0.0f));
-		modelTemp2 = model = glm::translate(model, glm::vec3(0.25f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.5f, 1.0f, 1.0f));
+		// Modelo Palma
+		model = glm::translate(modelTemp, glm::vec3(1.0f, 0.0f, 0.0f));  // Traslamos al extremo del antebrazo
+		model = glm::rotate(model, glm::radians(muneca), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotamos la muñeca
+		modelTemp2 = model = glm::translate(model, glm::vec3(0.25f, 0.0f, 0.0f)); // Trasladamos la palma
+		model = glm::scale(model, glm::vec3(0.5f, 1.0f, 1.0f)); // Escala de la palma
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);//C
+		glDrawArrays(GL_TRIANGLES, 0, 36); // Dibuja la palma
 
-		//Modelo Dedo1
-		model = glm::translate(modelTemp2, glm::vec3(0.25f, 0.35f, 0.375f));  
-		model = glm::rotate(model, glm::radians(dedo1), glm::vec3(0.0f, 0.0f, 1.0f));
-		modelTemp2 = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 0.3f, 0.25f));
-		color = glm::vec3(0.0f, 1.0f, 1.0f);
+		// Modelo Dedo1 (con dos partes)
+		model = glm::translate(modelTemp2, glm::vec3(0.0f, 0.35f, 0.375f));  // Traslado del dedo1 desde la palma
+		model = glm::rotate(model, glm::radians(dedo1), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo1
+		modelTemp2 = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));  // Generamos la jerarquía del dedo1
+		model = glm::scale(model, glm::vec3(0.5f, 0.3f, 0.25f)); // Escala del dedo1
+		color = glm::vec3(0.0f, 1.0f, 1.0f);  // Color del dedo1
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);//D
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la primera parte del dedo1
 
-		//Modelo Dedo1 B
-		model = glm::translate(modelTemp2, glm::vec3(0.5f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(dedo2), glm::vec3(0.0f, 0.0f, 1.0f));
-		modelTemp2 = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 0.3f, 0.25f));
-		color = glm::vec3(1.0f, 0.0f, 1.0f);
+		// Segunda parte del Dedo1 (falange)
+		model = glm::translate(modelTemp2, glm::vec3(0.5f, 0.0f, 0.0f));  // Traslación al final del primer segmento
+		model = glm::rotate(model, glm::radians(f1), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo1
+		model = glm::scale(model, glm::vec3(0.4f, 0.3f, 0.25f)); // Escala de la segunda parte
+		color = glm::vec3(0.0f, 1.0f, 1.0f);  // Color de la segunda parte del dedo1
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);//E
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la segunda parte del dedo1
+
+		// Modelo Dedo2 (con dos partes)
+		model = glm::translate(modelTemp2, glm::vec3(-0.55f, 0.0f, -0.375f));  // Traslado del dedo2 desde la palma
+		model = glm::rotate(model, glm::radians(dedo2), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo2
+		modelTemp2 = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));  // Generamos la jerarquía del dedo2
+		model = glm::scale(model, glm::vec3(0.6f, 0.3f, 0.25f)); // Escala del dedo2
+		color = glm::vec3(0.0f, 1.0f, 0.0f);  // Color del dedo2
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la primera parte del dedo2
+
+		// Segunda parte del Dedo2 (falange)
+		model = glm::translate(modelTemp2, glm::vec3(0.6f, 0.0f, 0.0f));  // Traslación al final del primer segmento
+		model = glm::rotate(model, glm::radians(f1), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo1
+		model = glm::scale(model, glm::vec3(0.5f, 0.3f, 0.25f)); // Escala de la segunda parte
+		color = glm::vec3(0.0f, 1.0f, 0.0f);  // Color de la segunda parte del dedo2
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la segunda parte del dedo2
+
+		// Modelo Dedo3 (con dos partes)
+		model = glm::translate(modelTemp2, glm::vec3(-0.55f, 0.0f, -0.425f));  // Traslado del dedo3 desde la palma
+		model = glm::rotate(model, glm::radians(dedo3), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo3
+		modelTemp2 = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));  // Generamos la jerarquía del dedo3
+		model = glm::scale(model, glm::vec3(0.6f, 0.3f, 0.25f)); // Escala del dedo3
+		color = glm::vec3(1.0f, 1.0f, 1.0f);  // Color del dedo3
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la primera parte del dedo3
+
+		// Segunda parte del Dedo3 (falange)
+		model = glm::translate(modelTemp2, glm::vec3(0.6f, 0.0f, 0.0f));  // Traslación al final del primer segmento
+		model = glm::rotate(model, glm::radians(f1), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo1
+		model = glm::scale(model, glm::vec3(0.5f, 0.3f, 0.25f)); // Escala de la segunda parte
+		color = glm::vec3(1.0f, 1.0f, 1.0f);  // Color de la segunda parte del dedo3
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la segunda parte del dedo3
+
+		// Modelo Dedo4 (con dos partes)
+		model = glm::translate(modelTemp2, glm::vec3(-0.5f, -0.35f, -0.0f));  // Traslado del dedo4 desde la palma
+		model = glm::rotate(model, glm::radians(dedo4), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo4
+		modelTemp2 = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));  // Generamos la jerarquía del dedo4
+		model = glm::scale(model, glm::vec3(0.6f, 0.3f, 0.25f)); // Escala del dedo4
+		color = glm::vec3(0.0f, 0.0f, 1.0f);  // Color del dedo4
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la primera parte del dedo4
+
+		// Segunda parte del Dedo4 (falange)
+		model = glm::translate(modelTemp2, glm::vec3(0.6f, 0.0f, 0.0f));  // Traslación al final del primer segmento
+		model = glm::rotate(model, glm::radians(f1), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación del dedo1
+		model = glm::scale(model, glm::vec3(0.5f, 0.3f, 0.25f)); // Escala de la segunda parte
+		color = glm::vec3(0.0f, 0.0f, 1.0f);  // Color de la segunda parte del dedo4
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la segunda parte del dedo4
+
+		// Modelo Dedo5 (con dos partes)
+		model = glm::translate(modelTemp2, glm::vec3(-0.5f, -0.35f, 0.0f));  // Traslado del dedo5 desde la palma
+		model = glm::rotate(model, glm::radians(dedo5), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación del dedo5
+		modelTemp2 = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));  // Generamos la jerarquía del dedo5
+		model = glm::scale(model, glm::vec3(0.6f, 0.3f, 0.25f)); // Escala del dedo5
+		color = glm::vec3(1.0f, 0.0f, 1.0f);  // Color del dedo5
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la primera parte del dedo5
+
+		// Segunda parte del Dedo5 (falange)
+		model = glm::translate(modelTemp2, glm::vec3(0.6f, 0.0f, 0.0f));  // Traslación al final del primer segmento
+		model = glm::rotate(model, glm::radians(f1), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación del dedo1
+		model = glm::scale(model, glm::vec3(0.5f, 0.3f, 0.25f)); // Escala de la segunda parte
+		color = glm::vec3(1.0f, 0.0f, 1.0f);  // Color de la segunda parte del dedo5
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja la segunda parte del dedo5
+
+
+
+
+
+
 
 
 
@@ -315,6 +400,22 @@ int main() {
 		 dedo2 += 0.18f;
 	 if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 		 dedo2 -= 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		 dedo3 += 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+		 dedo3 -= 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		 dedo4 += 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+		 dedo4 -= 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		 dedo5 += 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+		 dedo5 -= 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+		 f1+= 0.18f;
+	 if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+		 f1 -= 0.18f;
  }
 
 
