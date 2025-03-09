@@ -1,7 +1,7 @@
 ﻿/*
 Hernandez Ramirez Miguel Angel
-Modelado Jerarquico
-26 de febrero del 2025
+Modelado Jerarquico PRACTICA 5
+09 de febrero del 2025
 319044618
 */
 
