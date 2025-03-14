@@ -1,7 +1,7 @@
 
 /*
 Hernandez Ramirez Miguel Angel
-Carga de Modelos
+Carga de Modelos PRACTICA 6
 14 de marzo del 2025
 N.C 319044618
 */
@@ -249,7 +249,7 @@ int main( )
         modelTransform5 = glm::rotate(modelTransform5, glm::radians(225.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform5));
         pay.Draw(shader);
-
+        
         //
 
 
