@@ -104,11 +104,17 @@ int main( )
     // Setup and compile our shaders
     Shader shader( "Shader/modelLoading.vs", "Shader/modelLoading.frag" );
     
-    // Load models
-    Model dog((char*)"Models/RedDog.obj");
-    glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
-    
-  
+    // Cargar modelos
+       Model dog((char*)"Models/RedDog.obj");
+       Model cir((char*)"Models/circo.obj");  // Agregamos el nuevo modelo
+       Model silla((char*)"Models/M/tripo_convert_6b109b73-3709-444c-8eb8-9b6703a81ae1.obj");  // Cargar el modelo de la silla
+       Model customModel((char*)"Models/P/1.obj");  // La ruta puede cambiar según donde esté el archivo .obj en tu proyecto
+       Model Pal((char*)"Models/3/pal.obj");  // La ruta puede cambiar según donde esté el archivo .obj en tu proyecto
+       Model pis((char*)"Models/4/piso.obj");  // La ruta puede cambiar según donde esté el archivo .obj en tu proyecto
+
+
+        glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+
 
     // Game loop
     while (!glfwWindowShouldClose(window))
@@ -132,21 +138,135 @@ int main( )
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-        // Draw the loaded model
-        glm::mat4 model(1);
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+       
+
+        // Dibujar el modelo del perro
+        glm::mat4 modelDog = glm::mat4(1.0f);
+        modelDog = glm::translate(modelDog, glm::vec3(0.0f, -0.2f, 0.0f)); // Ajusta la posición de la casa
+        modelDog = glm::rotate(modelDog, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Corregir el modelo rotado
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelDog));
         dog.Draw(shader);
+        
+        // Dibujar la casa en una posición diferente
+        glm::mat4 modelCottage = glm::mat4(1.0f);
+        modelCottage = glm::translate(modelCottage, glm::vec3(0.0f, 0.35f, -0.19f)); // Ajusta la posición de la casa
+        modelCottage = glm::scale(modelCottage, glm::vec3(7.0f, 7.0f, 7.0f)); // Ajusa el tamaño si es necesario
+        modelCottage = glm::rotate(modelCottage, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Mantener la rotación
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelCottage));
+        cir.Draw(shader);
+
+        // Dibujar la primera silla
+        glm::mat4 modelSilla1 = glm::mat4(1.0f);
+        modelSilla1 = glm::translate(modelSilla1, glm::vec3(0.0f, -1.0f, 2.0f));  // Ajusta la posición aquí
+        modelSilla1 = glm::scale(modelSilla1, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla1 = glm::rotate(modelSilla1, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla1));
+        silla.Draw(shader);
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla2 = glm::mat4(1.0f);
+        modelSilla2 = glm::translate(modelSilla2, glm::vec3(1.0f, -1.0f, 2.0f));  // Ajusta la posición aquí
+        modelSilla2 = glm::scale(modelSilla2, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla2 = glm::rotate(modelSilla2, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla2));
+        silla.Draw(shader);
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla3 = glm::mat4(1.0f);
+        modelSilla3 = glm::translate(modelSilla3, glm::vec3(-1.0f, -1.0f, 2.0f));  // Ajusta la posición aquí
+        modelSilla3 = glm::scale(modelSilla3, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla3 = glm::rotate(modelSilla3, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla3));
+        silla.Draw(shader);
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla4 = glm::mat4(1.0f);
+        modelSilla4 = glm::translate(modelSilla4, glm::vec3(-2.0f, -1.0f, 2.0f));  // Ajusta la posición aquí
+        modelSilla4 = glm::scale(modelSilla4, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla4 = glm::rotate(modelSilla4, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla4));
+        silla.Draw(shader);
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla5 = glm::mat4(1.0f);
+        modelSilla5 = glm::translate(modelSilla5, glm::vec3(2.0f, -1.0f, 2.0f));  // Ajusta la posición aquí
+        modelSilla5 = glm::scale(modelSilla5, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla5 = glm::rotate(modelSilla5, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla5));
+        silla.Draw(shader);
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla6 = glm::mat4(1.0f);
+        modelSilla6 = glm::translate(modelSilla6, glm::vec3(1.0f, -1.0f, 3.0f));  // Ajusta la posición aquí
+        modelSilla6 = glm::scale(modelSilla6, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla6 = glm::rotate(modelSilla6, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla6));
+        silla.Draw(shader);
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla7 = glm::mat4(1.0f);
+        modelSilla7 = glm::translate(modelSilla7, glm::vec3(0.0f, -1.0f, 3.0f));  // Ajusta la posición aquí
+        modelSilla7 = glm::scale(modelSilla7, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla7 = glm::rotate(modelSilla7, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla7));
+        silla.Draw(shader);
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla8 = glm::mat4(1.0f);
+        modelSilla8 = glm::translate(modelSilla8, glm::vec3(-1.0f, -1.0f, 3.0f));  // Ajusta la posición aquí
+        modelSilla8 = glm::scale(modelSilla8, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelSilla8 = glm::rotate(modelSilla8, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla8));
+        silla.Draw(shader);
+
+        // Dibujar el modelo .obj
+        glm::mat4 modelTransform = glm::mat4(1.0f);
+        modelTransform = glm::translate(modelTransform, glm::vec3(0.0f, -0.75f, 1.8f));  // Ajusta la posición del modelo
+        modelTransform = glm::scale(modelTransform, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        modelTransform = glm::rotate(modelTransform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform));
+        customModel.Draw(shader);
+
+        // Dibujar el modelo .obj
+        glm::mat4 modelTransform1 = glm::mat4(1.0f);
+        modelTransform1 = glm::translate(modelTransform1, glm::vec3(3.5f, -0.5f, 2.5f));  // Ajusta la posición del modelo
+        modelTransform1 = glm::scale(modelTransform1, glm::vec3(2.0f, 2.0f, 2.0f));      // Escala según sea necesario
+        modelTransform1 = glm::rotate(modelTransform1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform1));
+        Pal.Draw(shader);
+
+        glm::mat4 modelTransform2 = glm::mat4(1.0f);
+        modelTransform2 = glm::translate(modelTransform2, glm::vec3(0.0f, -1.6f, 0.0f));  // Ajusta la posición del modelo
+        modelTransform2 = glm::scale(modelTransform2, glm::vec3(9.0f, 9.0f, 9.0f));      // Escala según sea necesario
+        modelTransform2 = glm::rotate(modelTransform2, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform2));
+        pis.Draw(shader);
 
 
-        model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        dog.Draw(shader);
+        //// Dibujar la silla 6
+        //glm::mat4 modelSilla6 = glm::mat4(1.0f);
+        //modelSilla6 = glm::translate(modelSilla6, glm::vec3(1.0f, -1.0f, 3.0f));  // Ajusta la posición aquí
+        //modelSilla6 = glm::scale(modelSilla6, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        //modelSilla6 = glm::rotate(modelSilla6, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        //glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla6));
+        //silla.Draw(shader);
 
-        model = glm::translate(model, glm::vec3(6.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        dog.Draw(shader);
+        // Dibujar la silla 5
+        //glm::mat4 modelSilla5 = glm::mat4(1.0f);
+        //modelSilla5 = glm::translate(modelSilla5, glm::vec3(0.0f, -1.0f, 3.0f));  // Ajusta la posición aquí
+        //modelSilla5 = glm::scale(modelSilla5, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        //modelSilla5 = glm::rotate(modelSilla5, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        //glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla5));
+        //silla.Draw(shader);
+
+        // Dibujar la silla 7
+        //glm::mat4 modelSilla7 = glm::mat4(1.0f);
+        //modelSilla7 = glm::translate(modelSilla7, glm::vec3(-1.0f, -1.0f, 3.0f));  // Ajusta la posición aquí
+        //modelSilla7 = glm::scale(modelSilla7, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala según sea necesario
+        //modelSilla7 = glm::rotate(modelSilla7, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota según lo que necesites
+        //glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla7));
+        //silla.Draw(shader);
+
 
         // Swap the buffers
         glfwSwapBuffers( window );
