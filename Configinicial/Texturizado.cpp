@@ -1,4 +1,9 @@
-
+/*
+Miguel Angel Hernandez Ramirez
+319044618
+Texturizado
+19/03/2025
+*/
 #include <iostream>
 #include <cmath>
 
