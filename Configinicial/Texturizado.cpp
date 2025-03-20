@@ -1,4 +1,11 @@
 
+/*
+Miguel Angel Hernandez Ramirez
+319044618
+Practica 7 Texturizado
+19/03/2025
+*/
+
 #include <iostream>
 #include <cmath>
 
@@ -93,28 +100,60 @@ int main()
 	// OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
+	
 
 	// Build and compile our shader program
 	Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
 
-	// Set up vertex data (and buffer(s)) and attribute pointers
-	GLfloat vertices[] =
-	{
-		// Positions            // Colors              // Texture Coords
-		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,0.0f,
-		0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		1.0f,0.0f,
-		0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	    1.0f,1.0f,
-		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,1.0f,
+	GLfloat vertices[] = {
+		// Frente (Coordenadas Y invertidas)
+		-0.5f, -0.5f, -0.5f,   1.0f, 1.0f, 1.0f,   0.74f, 0.64f, // Front
+		 0.5f, -0.5f, -0.5f,   1.0f, 1.0f, 1.0f,   0.98f, 0.64f, // Front
+		 0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 1.0f,   0.98f, 0.45f, // Front
+		-0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 1.0f,   0.74f, 0.45F, // Front
 
-		
+		-0.5f, -0.5f, 0.5f,   1.0f, 1.0f, 1.0f,   0.28f, 0.64f, // D
+		 0.5f, -0.5f, 0.5f,    1.0f, 1.0f, 1.0f,   0.5f, 0.64f,  // E
+		 0.5f,  0.5f, 0.5f,    1.0f, 1.0f, 1.0f,   0.5f, 0.34f, // G
+		-0.5f,  0.5f, 0.5f,    1.0f, 1.0f, 1.0f,   0.28f, 0.34f, // F
+
+		// Izquierda (Coordenadas Y invertidas)
+		 -0.5f, -0.5f, -0.5f,   -1.0f, 0.0f, 0.0f,   0.27f, 0.5f, // F
+		 -0.5f, -0.5f,  0.5f,   -1.0f, 0.0f, 0.0f,   0.04f, 0.5f, // K
+		 -0.5f,  0.5f,  0.5f,   -1.0f, 0.0f, 0.0f,   0.04f, 0.4f, // L
+		 -0.5f,  0.5f, -0.5f,   -1.0f, 0.0f, 0.0f,   0.27f, 0.4f,  // M
+
+
+		// Derecha (Coordenadas y invertidas)
+		 0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.53f, 0.6f, // Derecha
+		 0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.74f, 0.6f, // Derecha
+		 0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.74f, 0.36f, // Derecha
+		 0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.53f, 0.36f, // Derecha
+
+
+		 // Abajo (Coordenadas Y invertidas)
+		 -0.5f, -0.5f, -0.5f,    0.0f, -1.0f, 0.0f,    0.29f, 0.94f, // Top
+		  0.5f, -0.5f, -0.5f,    0.0f, -1.0f, 0.0f,    0.5f, 0.94f, // Top
+		  0.5f, -0.5f, 0.5f,     0.0f, -1.0f, 0.0f,    0.5f, 0.67f, // Top
+		 -0.5f, -0.5f, 0.5f,     0.0f, -1.0f, 0.0f,    0.29f, 0.67f, // Top
+
+		 // Arriba (Coordenadas Y invertidas)
+		 -0.5f, 0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   0.28f, 0.33f, // Bottom
+		  0.5f, 0.5f, -0.5f,    0.0f, 1.0f, 0.0f,   0.5f, 0.33f, // Bottom
+		  0.5f, 0.5f, 0.5f,     0.0f, 1.0f, 0.0f,   0.5f, 0.13f, // Bottom
+		 -0.5f, 0.5f, 0.5f,    0.0f, 1.0f, 0.0f,   0.28f, 0.13f  // Bottom
+
 	};
 
-	GLuint indices[] =
-	{  // Note that we start from 0!
-		0,1,3,
-		1,2,3
-	
-	};
+		GLuint indices[] = {
+		0, 1, 3, 1, 2, 3,   // Frente
+		4, 5, 7, 5, 6, 7,   // Atrás
+		8, 9, 11, 9, 10, 11, // Izquierda
+		12, 13, 15, 13, 14, 15, // Derecha
+		16, 17, 19, 17, 18, 19, // Arriba
+		20, 21, 23, 21, 22, 23  // Abajo
+		};
+
 
 	// First, set the container's VAO (and VBO)
 	GLuint VBO, VAO,EBO;
@@ -140,32 +179,32 @@ int main()
 	glEnableVertexAttribArray(2);
 	glBindVertexArray(0);
 
-	// Load textures
-	GLuint texture1;
+
+	// Cargar textura (supongamos que 'texture1' es el identificador de la textura)
+	GLuint texture1;  // Usando 'texture1'
 	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D,texture1);
-	int textureWidth, textureHeight,nrChannels;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char *image;
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-	// Diffuse map
-	image = stbi_load("images/window.png", &textureWidth, &textureHeight, &nrChannels,0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	if (image)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	int textureWidth, textureHeight, nrChannels;
+
+	unsigned char* image = stbi_load("images/cal.png", &textureWidth, &textureHeight, &nrChannels, 0);
+	if (image) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 		glGenerateMipmap(GL_TEXTURE_2D);
+		std::cout << "Texture loaded successfully!" << std::endl;
 	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
+	else {
+		std::cout << "Error loading texture" << std::endl;
 	}
 	stbi_image_free(image);
+
+
+	// Enlazar la textura al shader
+	lampShader.Use();
+	glUniform1i(glGetUniformLocation(lampShader.Program, "texture1"), 0); // El 0 corresponde a GL_TEXTURE0
+
+
+
+
 
 	
 
@@ -186,29 +225,37 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lampShader.Use();
-		//// Create camera transformations
-		glm::mat4 view;
-		view = camera.GetViewMatrix();
-		glm::mat4 projection = glm::perspective(camera.GetZoom(), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 model(1);
-		// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-		// Get the uniform locations
+		// Configurar la transformación del modelo para mover el cubo
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));  // Mueve el cubo hacia la cámara
+		glm::mat4 view = camera.GetViewMatrix(); // Esto depende de cómo tengas configurada la cámara
+
+
+		// Obtener las ubicaciones de las matrices en el shader
 		GLint modelLoc = glGetUniformLocation(lampShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(lampShader.Program, "view");
 		GLint projLoc = glGetUniformLocation(lampShader.Program, "projection");
 
-		// Bind diffuse map
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-
-		// Set matrices
+		// Setear las matrices en el shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		// Draw the light object (using light's vertex attributes)
+
+		// Dibuja todas las caras del cubo
+		// Enlazar la textura
+		glActiveTexture(GL_TEXTURE0);  // Usamos el canal de textura 0
+		glBindTexture(GL_TEXTURE_2D, texture1);
+
+		// Enlazar el shader y las matrices
+		lampShader.Use();
+		glUniform1i(glGetUniformLocation(lampShader.Program, "texture1"), 0);  // Asegúrate de que el 0 corresponda a GL_TEXTURE0
+
+		// Dibujar el cubo
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);  // Dibuja todas las caras del cubo
 		glBindVertexArray(0);
+
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
