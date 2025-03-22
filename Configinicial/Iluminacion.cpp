@@ -1,4 +1,11 @@
 
+/*
+Miguel Angel Hernandez Ramirez
+319044618
+Actividad Previa Materiales e Iluminaciones
+22/03/2025
+*/
+
 // Std. Includes
 #include <string>
 
@@ -282,14 +289,14 @@ int main()
         // Configurar la primera fuente de luz
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.position"), lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.6f, 0.6f, 0.6f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.6f, 0.6f, 0.6f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.3f, 0.1f, 0.2f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.4f, 0.3f);
 
         // Configurar la segunda fuente de luz (secondLight)
         glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.position"), secondLightPos.x + movelightPos, secondLightPos.y, secondLightPos.z);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.diffuse"), 0.6f, 0.6f, 0.6f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.specular"), 0.6f, 0.6f, 0.6f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.diffuse"), 0.3f, 0.1f, 0.2f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.specular"), 0.3f, 0.4f, 0.3f);
 
         // Pasar otros uniformes que ya usas (como la posición de la cámara)
         glUniform3f(glGetUniformLocation(lightingShader.Program, "viewPos"), camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
@@ -300,9 +307,9 @@ int main()
 
         // Set material properties
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.5f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.7f, 0.2f, 0.4f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 0.6f, 0.6f, 0.6f);
-        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.6f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.3f, 0.2f, 0.4f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 0.3f, 0.6f, 0.6f);
+        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.4f);
 
         // Draw the per_neg model
         glm::mat4 model(1.0f);
