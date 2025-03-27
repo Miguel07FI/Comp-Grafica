@@ -1,5 +1,4 @@
-
-/*
+﻿/*
 Miguel Angel Hernandez Ramirez
 319044618
 Actividad Previa Materiales e Iluminaciones
@@ -39,7 +38,7 @@ void DoMovement();
 
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -55,6 +54,14 @@ bool activanim = false;
 
 float moveLightPosY = 0.0f; // Movimiento en Y
 float moveLightPosZ = 0.0f; // Movimiento en Z
+float lightAngle = 0.0f; // Ángulo de rotación
+float lightRadius = 4.0f; // Radio del giro
+
+bool isDay = true;  // Verdadero si es de día, falso si es de noche
+glm::vec3 lightColor(1.0f, 0.9f, 0.6f);  // Color de luz para el día (amarillo cálido)
+
+
+
 
 
 int main()
@@ -92,7 +99,7 @@ int main()
 
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
-    glm::vec3 lightPos(0.5f, 0.5f, 2.5f);  // Fuente de luz principal
+    glm::vec3 lightPos(0.8f, 0.7f, 0.3f);  // Fuente de luz principal
     glm::vec3 secondLightPos(-1.0f, 1.0f, 1.0f);  // Segunda fuente de luz
     // Initialize GLEW to setup the OpenGL Function pointers
     if (GLEW_OK != glewInit())
@@ -116,104 +123,30 @@ int main()
 
     // Load models
     Model red_dog((char*)"Models/RedDog.obj");
+    Model cir((char*)"Models/circo.obj");
+    Model silla((char*)"Models/M/tripo_convert_6b109b73-3709-444c-8eb8-9b6703a81ae1.obj");
     Model per_neg((char*)"Models/P/1.obj");
+    Model Pal((char*)"Models/3/pal.obj");
+    Model pis((char*)"Models/4/piso.obj");
+    Model pay((char*)"Models/5/pay.obj");
+    Model sol((char*)"Models/6/sol.obj");
+    Model luna((char*)"Models/7/luna.obj");
+
+
+
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 modelLight(1.0f);
+    modelLight = glm::translate(modelLight, lightPos);  // Posición de la luz
+    modelLight = glm::scale(modelLight, glm::vec3(0.3f));  // Escala del modelo de luz (ajusta el tamaño)
 
-    float vertices[] = {
-      -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
-
-    // Definir un cubo para representar la luz
-    float lightCubeVertices[] = {
-        -0.5f, -0.5f, -0.5f,  // Frente
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f, -0.5f,  0.5f,  // Atr�s
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-
-        -0.5f,  0.5f,  0.5f,  // Arriba
-        -0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-
-        -0.5f, -0.5f,  0.5f,  // Abajo
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-
-        0.5f, -0.5f, -0.5f,  // Derecha
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f, -0.5f,
-
-        -0.5f, -0.5f, -0.5f,  // Izquierda
-        -0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f
-    };
+   
 
     GLuint lightCubeVAO, lightCubeVBO;
     glGenVertexArrays(1, &lightCubeVAO);
     glGenBuffers(1, &lightCubeVBO);
     glBindVertexArray(lightCubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(lightCubeVertices), lightCubeVertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
@@ -226,7 +159,6 @@ int main()
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
@@ -266,6 +198,12 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
+        lightPos.x = lightRadius * cos(lightAngle);
+        lightPos.z = lightRadius * sin(lightAngle);
+        lightPos.y = 1.2f;  // Mantén la altura de la luz fija si es necesario
+
+
+
         // Set frame time
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -279,71 +217,196 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Usar el shader de iluminaci�n para dibujar los modelos
         lightingShader.Use();
         GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
-        glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
+        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 
-        // Configurar la primera fuente de luz
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.position"), lightPos.x, lightPos.y, lightPos.z);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.3f, 0.1f, 0.2f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.4f, 0.3f);
+        // Aquí aplicamos la luz según si es día o noche
+        if (isDay)
+        {
+            // Luz tipo sol (amarillo cálido)
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.1f);  // Luz ambiental más intensa
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 1.0f, 1.0f, 0.8f); // Luz difusa más intensa (amarilla)
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 1.0f, 1.0f, 0.8f);  // Luz especular más intensa (brillante)
 
-        // Configurar la segunda fuente de luz (secondLight)
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.position"), secondLightPos.x + movelightPos, secondLightPos.y, secondLightPos.z);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.diffuse"), 0.3f, 0.1f, 0.2f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "secondLight.specular"), 0.3f, 0.4f, 0.3f);
+            // Dibujar solo el modelo del sol
+            glm::mat4 modelLight(1.0f);
+            modelLight = glm::translate(modelLight, lightPos);
+            modelLight = glm::scale(modelLight, glm::vec3(0.3f));
+            glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelLight));
+            sol.Draw(lightingShader);  // Modelo de sol
 
-        // Pasar otros uniformes que ya usas (como la posici�n de la c�mara)
+        }
+        else
+        {
+            // Luz tipo luna (azul)
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.2f, 0.2f, 0.2f);  // Luz ambiental más tenue
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.1f, 0.1f, 0.5f);    // Luz azul difusa
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.1f, 0.1f, 0.3f);   // Luz azul especular
+
+            // Dibujar solo el modelo de la luna
+            glm::mat4 modelLight(1.0f);
+            modelLight = glm::translate(modelLight, lightPos);
+            modelLight = glm::scale(modelLight, glm::vec3(0.3f));
+            glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelLight));
+            luna.Draw(lightingShader);  // Modelo de luna
+        }
+
+
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.1f);   // Material más brillante
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 1.0f, 1.0f, 0.6f);   // Material con un buen color difuso
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 1.0f, 1.0f, 0.8f);  // Alta reflectividad
+        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 32.0f); // Brillo más alto
+
+
+
+        // Pasar otros uniformes que ya usas (como la posición de la cámara)
         glUniform3f(glGetUniformLocation(lightingShader.Program, "viewPos"), camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 
         glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-        // Set material properties
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.5f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.3f, 0.2f, 0.4f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 0.3f, 0.6f, 0.6f);
-        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.4f);
+        
 
-        // Draw the per_neg model
-        glm::mat4 model(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));  // Mover el modelo a la derecha
-        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));  // Escalar el modelo
-        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        per_neg.Draw(lightingShader);  // Dibuja el modelo per_neg
+        // Dibujar el modelo del perro
+        glm::mat4 modelDog = glm::mat4(1.0f);
+        modelDog = glm::translate(modelDog, glm::vec3(0.0f, -0.2f, 0.0f)); // Ajusta la posici�n de la casa
+        modelDog = glm::rotate(modelDog, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Corregir el modelo rotado
+        lightingShader.Use();
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelDog));
+        red_dog.Draw(lightingShader);
 
-        // Dibuja el modelo cargado red_dog
-        glm::mat4 red_dogModel(1.0f);
-        red_dogModel = glm::scale(red_dogModel, glm::vec3(3.0f, 3.0f, 3.0f));  // Escalar el modelo
-        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(red_dogModel));
-        red_dog.Draw(lightingShader);  // Dibuja el modelo red_dog
+
+        // Dibujar la circo en una posici�n diferente
+        glm::mat4 modelCottage = glm::mat4(1.0f);
+        modelCottage = glm::translate(modelCottage, glm::vec3(0.0f, 0.35f, -0.19f)); // Ajusta la posici�n de la casa
+        modelCottage = glm::scale(modelCottage, glm::vec3(7.0f, 7.0f, 7.0f)); // Ajusa el tama�o si es necesario
+        modelCottage = glm::rotate(modelCottage, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Mantener la rotaci�n
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelCottage));
+        cir.Draw(lightingShader);
+
+        // Dibujar la primera silla
+        glm::mat4 modelSilla1 = glm::mat4(1.0f);
+        modelSilla1 = glm::translate(modelSilla1, glm::vec3(0.0f, -1.0f, 2.0f));  // Ajusta la posici�n aqu�
+        modelSilla1 = glm::scale(modelSilla1, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla1 = glm::rotate(modelSilla1, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla1));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla2 = glm::mat4(1.0f);
+        modelSilla2 = glm::translate(modelSilla2, glm::vec3(1.0f, -1.0f, 2.0f));  // Ajusta la posici�n aqu�
+        modelSilla2 = glm::scale(modelSilla2, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla2 = glm::rotate(modelSilla2, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla2));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla3 = glm::mat4(1.0f);
+        modelSilla3 = glm::translate(modelSilla3, glm::vec3(-1.0f, -1.0f, 2.0f));  // Ajusta la posici�n aqu�
+        modelSilla3 = glm::scale(modelSilla3, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla3 = glm::rotate(modelSilla3, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla3));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla4 = glm::mat4(1.0f);
+        modelSilla4 = glm::translate(modelSilla4, glm::vec3(-2.0f, -1.0f, 2.0f));  // Ajusta la posici�n aqu�
+        modelSilla4 = glm::scale(modelSilla4, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla4 = glm::rotate(modelSilla4, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla4));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla5 = glm::mat4(1.0f);
+        modelSilla5 = glm::translate(modelSilla5, glm::vec3(2.0f, -1.0f, 2.0f));  // Ajusta la posici�n aqu�
+        modelSilla5 = glm::scale(modelSilla5, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla5 = glm::rotate(modelSilla5, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla5));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla6 = glm::mat4(1.0f);
+        modelSilla6 = glm::translate(modelSilla6, glm::vec3(1.0f, -1.0f, 3.0f));  // Ajusta la posici�n aqu�
+        modelSilla6 = glm::scale(modelSilla6, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla6 = glm::rotate(modelSilla6, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla6));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla7 = glm::mat4(1.0f);
+        modelSilla7 = glm::translate(modelSilla7, glm::vec3(0.0f, -1.0f, 3.0f));  // Ajusta la posici�n aqu�
+        modelSilla7 = glm::scale(modelSilla7, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla7 = glm::rotate(modelSilla7, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla7));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar la segunda silla
+        glm::mat4 modelSilla8 = glm::mat4(1.0f);
+        modelSilla8 = glm::translate(modelSilla8, glm::vec3(-1.0f, -1.0f, 3.0f));  // Ajusta la posici�n aqu�
+        modelSilla8 = glm::scale(modelSilla8, glm::vec3(-1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelSilla8 = glm::rotate(modelSilla8, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota seg�n lo que necesites
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelSilla8));
+        silla.Draw(lightingShader);
+
+
+        // Dibujar el modelo .obj
+        glm::mat4 modelTransform = glm::mat4(1.0f);
+        modelTransform = glm::translate(modelTransform, glm::vec3(0.0f, -0.75f, 1.8f));  // Ajusta la posici�n del modelo
+        modelTransform = glm::scale(modelTransform, glm::vec3(1.0f, 1.0f, 1.0f));      // Escala seg�n sea necesario
+        modelTransform = glm::rotate(modelTransform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform));
+        per_neg.Draw(lightingShader);
+
+
+        // Dibujar el modelo .obj
+        glm::mat4 modelTransform1 = glm::mat4(1.0f);
+        modelTransform1 = glm::translate(modelTransform1, glm::vec3(3.5f, -0.5f, 2.5f));  // Ajusta la posici�n del modelo
+        modelTransform1 = glm::scale(modelTransform1, glm::vec3(2.0f, 2.0f, 2.0f));      // Escala seg�n sea necesario
+        modelTransform1 = glm::rotate(modelTransform1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform1));
+        Pal.Draw(lightingShader);
+
+
+        glm::mat4 modelTransform2 = glm::mat4(1.0f);
+        modelTransform2 = glm::translate(modelTransform2, glm::vec3(0.0f, -1.6f, 0.0f));  // Ajusta la posici�n del modelo
+        modelTransform2 = glm::scale(modelTransform2, glm::vec3(9.0f, 9.0f, 9.0f));      // Escala seg�n sea necesario
+        modelTransform2 = glm::rotate(modelTransform2, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform2));
+        pis.Draw(lightingShader);
+
+
+        glm::mat4 modelTransform5 = glm::mat4(1.0f);
+        modelTransform5 = glm::translate(modelTransform5, glm::vec3(1.5f, -0.5f, 0.5f));  // Ajusta la posici�n del modelo
+        modelTransform5 = glm::scale(modelTransform5, glm::vec3(2.0f, 2.0f, 2.0f));      // Escala seg�n sea necesario
+        modelTransform5 = glm::rotate(modelTransform5, glm::radians(225.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform5));
+        pay.Draw(lightingShader);
+
 
         // Dibujar el primer cubo de luz (lightPos)
        // Dibujar el primer cubo de luz (lightPos)
         lampshader.Use();
 
         // Desactivar la prueba de profundidad para el cubo de luz (para hacerlo siempre visible)
-        glDisable(GL_DEPTH_TEST);
+       
 
-        glm::mat4 modelLight1(1.0f);
-        modelLight1 = glm::translate(modelLight1, lightPos + glm::vec3(movelightPos, 0.0f, 0.0f));  // Posici�n de la primera fuente de luz
-        modelLight1 = glm::scale(modelLight1, glm::vec3(0.3f));  // Escala del primer cubo de luz (sin cambios, tama�o original)
+        
+        // Intercambiar los buffers para mostrar la escena renderizada
+        
 
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelLight1));
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja el primer cubo de luz
-        glBindVertexArray(0);
-
-        // Volver a habilitar la prueba de profundidad despu�s de renderizar el cubo de luz
+        // Volver a habilitar la prueba de profundidad después de renderizar el cubo de luz
         glEnable(GL_DEPTH_TEST);
 
 
@@ -354,18 +417,8 @@ int main()
         glDisable(GL_DEPTH_TEST);
 
         glm::mat4 modelLight2(1.0f);
-        modelLight2 = glm::translate(modelLight2, secondLightPos + glm::vec3(movelightPos + 0.0f, -0.5f, 1.0f));  // Desplazamos ligeramente el cubo 2 en el eje X para separarlos
-        modelLight2 = glm::scale(modelLight2, glm::vec3(0.3f));  // Escala del segundo cubo de luz
-
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelLight2));
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);  // Dibuja el segundo cubo de luz
-        glBindVertexArray(0);
-
-        // Volver a habilitar la prueba de profundidad despu�s de renderizar el cubo de luz
+    
+        // Volver a habilitar la prueba de profundidad después de renderizar el cubo de luz
         glEnable(GL_DEPTH_TEST);
 
 
@@ -384,30 +437,25 @@ int main()
 }
 
 
-// Funci�n para mover la c�mara
 void DoMovement()
 {
-    // C�mara controla el movimiento seg�n las teclas presionadas
+    // Movimiento de la cámara
     if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
-    {
         camera.ProcessKeyboard(FORWARD, deltaTime);
-    }
-
     if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
-    {
         camera.ProcessKeyboard(BACKWARD, deltaTime);
-    }
-
     if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
-    {
         camera.ProcessKeyboard(LEFT, deltaTime);
-    }
-
     if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
-    {
         camera.ProcessKeyboard(RIGHT, deltaTime);
-    }
 
+    // Movimiento circular de la luz con teclas O y L
+    if (keys[GLFW_KEY_O])
+        lightAngle += 1.5f * deltaTime;  // velocidad ajustada
+    if (keys[GLFW_KEY_L])
+        lightAngle -= 1.5f * deltaTime;
+
+    // Animación adicional (si la tienes activada con alguna lógica tuya)
     if (activanim)
     {
         if (rot > -90.0f)
@@ -415,42 +463,31 @@ void DoMovement()
     }
 }
 
-// Is called whenever a key is pressed/released via GLFW
+
+
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
-    {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+
+    if (key == GLFW_KEY_N && action == GLFW_PRESS)  // Cambiar entre sol y luna
+    {
+        isDay = !isDay;  // Cambiar entre día y noche
     }
 
     if (key >= 0 && key < 1024)
     {
         if (action == GLFW_PRESS)
-        {
             keys[key] = true;
-        }
         else if (action == GLFW_RELEASE)
-        {
             keys[key] = false;
-        }
     }
-
-    if (keys[GLFW_KEY_O])
-    {
-
-        movelightPos += 0.1f;
-    }
-
-    if (keys[GLFW_KEY_L])
-    {
-
-        movelightPos -= 0.1f;
-    }
-
-
 }
 
-// Funci�n para manejar el movimiento del rat�n
+
+
+
+// Función para manejar el movimiento del ratón
 void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 {
     if (firstMouse)
@@ -468,6 +505,3 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 
     camera.ProcessMouseMovement(xOffset, yOffset);
 }
-
-
-
