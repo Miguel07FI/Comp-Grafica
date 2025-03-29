@@ -1,7 +1,7 @@
 ﻿/*
 Miguel Angel Hernandez Ramirez
 319044618
-Actividad Previa Materiales e Iluminaciones
+Actividad Previa Materiales e Iluminaciones PRACTICA 8
 22/03/2025
 */
 
