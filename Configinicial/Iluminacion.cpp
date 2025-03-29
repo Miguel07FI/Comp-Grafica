@@ -76,7 +76,7 @@ int main()
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Materiales e Iluminacion Hernandez Ramirez Miguel Angel", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Materiales e Iluminacion Practica 8 Hernandez Ramirez Miguel Angel", nullptr, nullptr);
 
     if (nullptr == window)
     {
@@ -398,27 +398,13 @@ int main()
        // Dibujar el primer cubo de luz (lightPos)
         lampshader.Use();
 
-        // Desactivar la prueba de profundidad para el cubo de luz (para hacerlo siempre visible)
-       
-
-        
-        // Intercambiar los buffers para mostrar la escena renderizada
-        
-
+ 
 
         // Volver a habilitar la prueba de profundidad después de renderizar el cubo de luz
         glEnable(GL_DEPTH_TEST);
 
 
-        // Dibujar el segundo cubo de luz (secondLight) desplazado en el eje X
-        lampshader.Use();
-
-        // Desactivar la prueba de profundidad para el cubo de luz (para hacerlo siempre visible)
-        glDisable(GL_DEPTH_TEST);
-
-        glm::mat4 modelLight2(1.0f);
-    
-        // Volver a habilitar la prueba de profundidad después de renderizar el cubo de luz
+       // Volver a habilitar la prueba de profundidad después de renderizar el cubo de luz
         glEnable(GL_DEPTH_TEST);
 
 
