@@ -1,6 +1,6 @@
 ﻿/*
 Hernandez Ramirez Miguel Angel
-Fuentes de luz
+Fuentes de luz PRACTICA 9
 04 de abril del 2025
 319044618
 */
@@ -188,10 +188,7 @@ int main()
 
 
 
-	// Verificar si hubo algún error al cargar la textura
-	if (diffuseTextureID == 0) {
-		std::cout << "Error loading texture! " << SOIL_last_result() << std::endl;
-	}
+	
 
 	GLuint lightTextureF, lightTextureL;
 
@@ -200,14 +197,7 @@ int main()
 	lightTextureL = SOIL_load_OGL_texture("Models/FOC/Normal_Bake.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 
 
-// Verificar si las texturas se cargaron correctamente
-if (lightTextureF == 0) {
-    std::cout << "Error loading texture for F! " << SOIL_last_result() << std::endl;
-}
 
-if (lightTextureL == 0) {
-    std::cout << "Error loading texture for L! " << SOIL_last_result() << std::endl;
-}
 
 
 
@@ -757,10 +747,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 	
 }
-
-
-
-
 
 
 
