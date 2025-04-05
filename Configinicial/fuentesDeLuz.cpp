@@ -184,12 +184,31 @@ int main()
 	GLuint diffuseTextureID;  // Variable para almacenar el ID de la textura difusa
 
 	// Cargar la textura utilizando SOIL, stb_image, o cualquier otra librería
-	diffuseTextureID = SOIL_load_OGL_texture("path_to_texture.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+	diffuseTextureID = SOIL_load_OGL_texture("C:/path/to/your/textures/texture.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+
+
 
 	// Verificar si hubo algún error al cargar la textura
 	if (diffuseTextureID == 0) {
-		std::cout << "Error loading texture!" << std::endl;
+		std::cout << "Error loading texture! " << SOIL_last_result() << std::endl;
 	}
+
+	GLuint lightTextureF, lightTextureL;
+
+// Cargar las texturas para "F" y "L"
+	lightTextureF = SOIL_load_OGL_texture("Models/FOC/Diffuse_Bake.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+	lightTextureL = SOIL_load_OGL_texture("Models/FOC/Normal_Bake.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+
+
+// Verificar si las texturas se cargaron correctamente
+if (lightTextureF == 0) {
+    std::cout << "Error loading texture for F! " << SOIL_last_result() << std::endl;
+}
+
+if (lightTextureL == 0) {
+    std::cout << "Error loading texture for L! " << SOIL_last_result() << std::endl;
+}
+
 
 
 
@@ -285,7 +304,7 @@ int main()
 			lightColor.z = sin(glfwGetTime() * Light1.z);
 			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].position"), pointLightPositions[0].x, pointLightPositions[0].y, pointLightPositions[0].z);
 			// Point light 1
-			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].ambient"), 0.05f, 0.05f, 0.05f);  // Aumenta el brillo ambiente
+			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].ambient"), 0.1f, 0.1f, 0.1f);  // Aumenta el brillo ambiente
 			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].diffuse"), 0.2f, 0.2f, 0.2f);  // Aumenta la intensidad difusa
 			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].specular"), 0.2f, 0.2f, 0.2f);  // Aumenta la intensidad especular
 
@@ -402,7 +421,8 @@ int main()
 
 			// Ajustar la dirección de la luz (la luz sigue la dirección de la cámara)
 			glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.direction"),
-				camera.GetFront().x, camera.GetFront().y, camera.GetFront().z);
+				0.0f, 0.0f, -1.0f);  // Dirección fija hacia abajo (en el eje Y negativo)
+
 
 			// Otros parámetros de la luz spot
 			glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.constant"), 1.0f);
@@ -560,6 +580,20 @@ int main()
 		modelTransform5 = glm::rotate(modelTransform5, glm::radians(225.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
 		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform5));
 		pay.Draw(lightingShader);
+
+		glm::mat4 modelTransform6 = glm::mat4(1.0f);
+		modelTransform6 = glm::translate(modelTransform6, glm::vec3(0.0f, 0.5f, 3.5f));  // Ajusta la posici�n del modelo
+		modelTransform6 = glm::scale(modelTransform6, glm::vec3(0.6f, 0.6f, 0.6f));      // Escala seg�n sea necesario
+		modelTransform6 = glm::rotate(modelTransform6, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform6));
+		L.Draw(lightingShader);
+
+		glm::mat4 modelTransform9 = glm::mat4(1.0f);
+		modelTransform9 = glm::translate(modelTransform9, glm::vec3(3.5f, 0.2f, 3.0f));  // Ajusta la posici�n del modelo
+		modelTransform9 = glm::scale(modelTransform9, glm::vec3(0.5f, 0.5f, 0.5f));      // Escala seg�n sea necesario
+		modelTransform9 = glm::rotate(modelTransform9, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));  // Rota si es necesario
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelTransform9));
+		F.Draw(lightingShader);
 		
 		glBindVertexArray(0);
 
@@ -576,36 +610,27 @@ int main()
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		model = glm::mat4(1);
 		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+		model = glm::scale(model, glm::vec3(0.05f)); // Make it a smaller cube
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
 		
-			model = glm::mat4(1);
-			model = glm::translate(model, pointLightPositions[0]);
-			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		
+		// For Point Light 0
+		glm::mat4 modelLight0 = glm::mat4(1.0f);
+		modelLight0 = glm::translate(modelLight0, pointLightPositions[0]);  // Position of the first point light
+		modelLight0 = glm::scale(modelLight0, glm::vec3(0.005f));  // Small cube to represent the light
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelLight0));
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Draw the light cube
 
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pointLightPositions[0]);  // Posición de la luz puntual
-			model = glm::scale(model, glm::vec3(0.3f));  // Ajusta el tamaño del modelo
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			F.Draw(lampShader);  // Dibuja el modelo del sol
+		// For Reflector Light (Spotlight)
+		glm::mat4 modelReflectorLight = glm::mat4(1.0f);
+		modelReflectorLight = glm::translate(modelReflectorLight, reflectorLightPos); // Use the reflector light position
+		modelReflectorLight = glm::scale(modelReflectorLight, glm::vec3(0.05f));  // Adjust size if necessary
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelReflectorLight));
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);  // Draw the reflector light cube
 
-		
-			// Dibuja el modelo F en lugar de un cubo para la luz reflectora
-			glm::mat4 modelLightReflector = glm::mat4(1.0f);
-			modelLightReflector = glm::translate(modelLightReflector, reflectorLightPos); // Usar la nueva posición
-			modelLightReflector = glm::scale(modelLightReflector, glm::vec3(0.7f));  // Ajustar el tamaño si es necesario
-
-			// Establecer el modelo de la luz reflectora en el shader
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelLightReflector));
-
-			// Dibujar el modelo F como la luz reflectora
-			glBindVertexArray(0);  // Si estás usando VBOs para el cubo, ya no lo necesitas.
-			L.Draw(lightingShader);  // Dibuja el modelo F que has cargado como la luz reflectora
+			
 
 
 		glBindVertexArray(0);
