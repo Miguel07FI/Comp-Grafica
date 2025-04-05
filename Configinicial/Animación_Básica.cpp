@@ -58,7 +58,7 @@ bool moviendoArriba = true;  // Variable para controlar la dirección de la pelot
 bool animacionActivada = false;  // Animación inicialmente desactivada
 
 
-float limiteInferior = -0.5f;  
+float limiteInferior = 0.0f;  
 float limiteSuperior = 1.7;   
 
 // Positions of the point lights
