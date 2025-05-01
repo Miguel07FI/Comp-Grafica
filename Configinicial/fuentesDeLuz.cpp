@@ -53,6 +53,9 @@ bool active;
 bool directionalLightOn = true;  // Variable para alternar el estado de la luz direccional
 bool pointLightActive = true;  // Controlar si la luz puntual está encendida o apagada
 bool reflectorLightActive = true;  // Estado de la luz reflectora (encendida o apagada)
+// Reflector Light (Spotlight)
+glm::vec3 reflectorLightPos(0.0f, 0.3f, 3.5f);
+bool reflectorLightActive = true;
 
 
 
